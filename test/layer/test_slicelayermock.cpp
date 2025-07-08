@@ -10,9 +10,11 @@ TEST(SliceLayerMockTest, configure_success_simple_slice) {
   Shape output_shape_ref;
   Shape expected_output_shape({5, 10, 3});
 
-  ASSERT_NO_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref));
+  ASSERT_NO_THROW(
+      layer.configure(input_shape, starts, sizes, output_shape_ref));
   EXPECT_EQ(output_shape_ref.dimensions, expected_output_shape.dimensions);
-  EXPECT_EQ(layer.get_output_shape().dimensions,expected_output_shape.dimensions);
+  EXPECT_EQ(layer.get_output_shape().dimensions,
+            expected_output_shape.dimensions);
 }
 
 TEST(SliceLayerMockTest, configure_success_slice_to_end) {
@@ -23,7 +25,8 @@ TEST(SliceLayerMockTest, configure_success_slice_to_end) {
   Shape output_shape_ref;
   Shape expected_output_shape({5, 18, 3});
 
-  ASSERT_NO_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref));
+  ASSERT_NO_THROW(
+      layer.configure(input_shape, starts, sizes, output_shape_ref));
   EXPECT_EQ(output_shape_ref.dimensions, expected_output_shape.dimensions);
 }
 
@@ -34,7 +37,8 @@ TEST(SliceLayerMockTest, configure_fail_starts_sizes_rank_mismatch) {
   std::vector<int> sizes = {5, 10, 3};
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref), std::runtime_error);
+  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(SliceLayerMockTest, configure_fail_start_out_of_bounds) {
@@ -44,7 +48,8 @@ TEST(SliceLayerMockTest, configure_fail_start_out_of_bounds) {
   std::vector<int> sizes = {5, 1, 3};
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref), std::runtime_error);
+  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(SliceLayerMockTest, configure_fail_negative_start) {
@@ -54,7 +59,8 @@ TEST(SliceLayerMockTest, configure_fail_negative_start) {
   std::vector<int> sizes = {5, 1, 3};
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref),std::runtime_error);
+  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(SliceLayerMockTest, configure_fail_negative_size_not_minus_one) {
@@ -64,7 +70,8 @@ TEST(SliceLayerMockTest, configure_fail_negative_size_not_minus_one) {
   std::vector<int> sizes = {5, -2, 3};
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref), std::runtime_error);
+  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(SliceLayerMockTest, configure_fail_slice_exceeds_dimension) {
@@ -74,7 +81,8 @@ TEST(SliceLayerMockTest, configure_fail_slice_exceeds_dimension) {
   std::vector<int> sizes = {5, 19, 3};
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref), std::runtime_error);
+  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(SliceLayerMockTest, configure_fail_zero_size) {
@@ -84,7 +92,8 @@ TEST(SliceLayerMockTest, configure_fail_zero_size) {
   std::vector<int> sizes = {5, 0, 3};
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref),std::runtime_error);
+  EXPECT_THROW(layer.configure(input_shape, starts, sizes, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(SliceLayerMockTest, exec_before_configure_fail) {
@@ -92,13 +101,13 @@ TEST(SliceLayerMockTest, exec_before_configure_fail) {
   Tensor<double> input(Shape({1, 1, 1}));
   Tensor<double> output(Shape({1, 1, 1}));
 
-  EXPECT_THROW(layer.exec(input, output), std::runtime_error);
+  EXPECT_THROW(layer.exec(input, output), std::logic_error);
 }
 
 TEST(SliceLayerMockTest, get_output_shape_before_configure_fail) {
   SliceLayerMock layer(39);
 
-  EXPECT_THROW(layer.get_output_shape(), std::runtime_error);
+  EXPECT_THROW(layer.get_output_shape(), std::logic_error);
 }
 
 TEST(SliceLayerMockTest, exec_success_after_configure) {

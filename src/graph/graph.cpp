@@ -1,24 +1,25 @@
 #include "./graph/graph.h"
 
+#include <iostream>
 #include <list>
 #include <queue>
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
-#include <iostream>
 
 #include "./layer/layer.h"
 #include "./tensor/tensor.h"
 
 Network::Network() : inputTensor_(), outputTensor_(nullptr) {}
 
-bool Network::addLayer(Layer& lay, const std::vector<int>& inputs, const std::vector<int>& outputs) {
+bool Network::addLayer(Layer& lay, const std::vector<int>& inputs,
+                       const std::vector<int>& outputs) {
   if (layers_.find(lay.getID()) == layers_.end()) {
     layers_[lay.getID()] = &lay;
 
     for (int input_layer_id : inputs) {
       auto it = layers_.find(input_layer_id);
-      if (it != layers_.end()) {  
+      if (it != layers_.end()) {
         Layer* prev_layer = it->second;
         prev_layer->addNeighbor(&lay);
       }
@@ -26,7 +27,7 @@ bool Network::addLayer(Layer& lay, const std::vector<int>& inputs, const std::ve
 
     for (int output_layer_id : outputs) {
       auto it = layers_.find(output_layer_id);
-      if (it != layers_.end()) {  
+      if (it != layers_.end()) {
         Layer* next_layer = it->second;
         lay.addNeighbor(next_layer);
       }
@@ -92,7 +93,7 @@ int Network::getEdges() const {
 bool Network::isEmpty() const { return layers_.empty(); }
 
 bool Network::bfs_helper(int start, int vert, bool flag,
-                       std::vector<int>* v_ord) const {
+                         std::vector<int>* v_ord) const {
   std::unordered_map<int, bool> visited;
   std::queue<int> queue;
 
@@ -179,19 +180,21 @@ void Network::run() {
     }
   }
   if (path.empty() || !end_in_path) {
-    throw std::runtime_error("No path from start to end layer found, or traversal is empty.");
+    throw std::runtime_error(
+        "No path from start to end layer found, or traversal is empty.");
   }
 
   Tensor<double> curr_tensor = inputTensor_;
 
-  std::unordered_map<int, Tensor<double>>layer_outputs;
+  std::unordered_map<int, Tensor<double>> layer_outputs;
   layer_outputs[start_] = inputTensor_;
 
   bool on_path = false;
 
   for (int layer_id : path) {
     if (layers_.find(layer_id) == layers_.end()) {
-      throw std::runtime_error("Layer_id from BFS traversal not found in graph.");
+      throw std::runtime_error(
+          "Layer_id from BFS traversal not found in graph.");
     }
     Layer* curr_layer_ptr = layers_.at(layer_id);
     if (!curr_layer_ptr) {
@@ -222,7 +225,6 @@ void Network::run() {
   }
 }
 
-
 std::vector<std::string> Network::getLayersTypeVector() const {
   std::vector<std::string> layer_types_vector;
 
@@ -233,7 +235,8 @@ std::vector<std::string> Network::getLayersTypeVector() const {
   }
 
   if (layers_.find(start_) == layers_.end()) {
-    layer_types_vector.push_back("Error: Start layer with ID not found in the graph's layers map.");
+    layer_types_vector.push_back(
+        "Error: Start layer with ID not found in the graph's layers map.");
     return layer_types_vector;
   }
 
@@ -241,11 +244,15 @@ std::vector<std::string> Network::getLayersTypeVector() const {
 
   if (traversal_order.empty()) {
     if (layers_.count(start_)) {
-      layer_types_vector.push_back("Warning: BFS traversal from start layer ID yielded no layers (or only the start layer was expected).");
-      layer_types_vector.push_back("Start layer type: " + layers_.at(start_)->get_type_name());
+      layer_types_vector.push_back(
+          "Warning: BFS traversal from start layer ID yielded no layers (or "
+          "only the start layer was expected).");
+      layer_types_vector.push_back("Start layer type: " +
+                                   layers_.at(start_)->get_type_name());
     } else {
       layer_types_vector.push_back(
-          "Error: BFS traversal from start layer ID failed, and start layer itself is not in graph.");
+          "Error: BFS traversal from start layer ID failed, and start layer "
+          "itself is not in graph.");
     }
     return layer_types_vector;
   }
@@ -259,8 +266,7 @@ std::vector<std::string> Network::getLayersTypeVector() const {
     }
 
     Layer* current_layer = it->second;
-    layer_types_vector.push_back(
-        current_layer->get_type_name());
+    layer_types_vector.push_back(current_layer->get_type_name());
   }
   return layer_types_vector;
 }

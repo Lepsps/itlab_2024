@@ -19,7 +19,8 @@ TEST(ElementwiseLayerMockTest, configure_fail_shape_mismatch) {
   Shape shape2({10, 20, 4});
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(shape1, shape2, output_shape_ref),std::runtime_error);
+  EXPECT_THROW(layer.configure(shape1, shape2, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(ElementwiseLayerMockTest, configure_fail_rank_mismatch) {
@@ -28,7 +29,8 @@ TEST(ElementwiseLayerMockTest, configure_fail_rank_mismatch) {
   Shape shape2({10, 20});
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(shape1, shape2, output_shape_ref),std::runtime_error);
+  EXPECT_THROW(layer.configure(shape1, shape2, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(ElementwiseLayerMockTest, exec_before_configure_fail) {
@@ -36,13 +38,13 @@ TEST(ElementwiseLayerMockTest, exec_before_configure_fail) {
   Tensor<double> input(Shape({1, 1, 1}));
   Tensor<double> output(Shape({1, 1, 1}));
 
-  EXPECT_THROW(layer.exec(input, output), std::runtime_error);
+  EXPECT_THROW(layer.exec(input, output), std::logic_error);
 }
 
 TEST(ElementwiseLayerMockTest, get_output_shape_before_configure_fail) {
   ElementwiseLayerMock layer(104, ElementwiseOp::ADD);
 
-  EXPECT_THROW(layer.get_output_shape(), std::runtime_error);
+  EXPECT_THROW(layer.get_output_shape(), std::logic_error);
 }
 
 TEST(ElementwiseLayerMockTest, exec_success_after_configure) {

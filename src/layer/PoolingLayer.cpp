@@ -1,18 +1,17 @@
 #ifndef ACL_POOLING_LAYER_MOCK_H
 #define ACL_POOLING_LAYER_MOCK_H
 
-#include <numeric>
+#include <cstddef>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 #include "./layer/layer.h"
 #include "./tensor/tensor.h"
 
-enum class PoolingType { MAX, AVG, L2 };
+enum class PoolingType { kMax, kAvg, kL2 };
 
 struct PoolingLayerInfo {
-  PoolingType pool_type{PoolingType::MAX};
+  PoolingType pool_type{PoolingType::kMax};
   int pool_size_x{2};
   int pool_size_y{2};
   int stride_x{1};
@@ -36,16 +35,22 @@ class PoolingLayerMock : public Layer {
 
   void configure(const Shape& input_shape, Shape& output_shape_ref) {
     if (input_shape.get_rank() != 4) {
-      throw std::runtime_error("PoolingMock: Input must be a 4D tensor (e.g., NCHW or NHWC) for this mock.");
+      throw std::runtime_error(
+          "PoolingMock: Input must be a 4D tensor (e.g., NCHW or NHWC) for "
+          "this mock.");
     }
-    size_t H_in_idx = input_shape.get_rank() - 2;
-    size_t W_in_idx = input_shape.get_rank() - 1;
+    size_t h_in_idx = input_shape.get_rank() - 2;
+    size_t w_in_idx = input_shape.get_rank() - 1;
 
-    size_t H_in = input_shape.dimensions[H_in_idx];
-    size_t W_in = input_shape.dimensions[W_in_idx];
+    size_t h_in = input_shape.dimensions[h_in_idx];
+    size_t w_in = input_shape.dimensions[w_in_idx];
 
-    size_t H_out = ((H_in + 2 * pool_info_.pad_y - pool_info_.pool_size_y) / pool_info_.stride_y) + 1;
-    size_t W_out = ((W_in + 2 * pool_info_.pad_x - pool_info_.pool_size_x) / pool_info_.stride_x) + 1;
+    size_t h_out = ((h_in + 2 * pool_info_.pad_y - pool_info_.pool_size_y) /
+                    pool_info_.stride_y) +
+                   1;
+    size_t w_out = ((w_in + 2 * pool_info_.pad_x - pool_info_.pool_size_x) /
+                    pool_info_.stride_x) +
+                   1;
 
     input_shape_ = input_shape;
     output_shape_ = input_shape;
@@ -59,40 +64,45 @@ class PoolingLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input, Tensor<double>& output) override {
+  void exec(const Tensor<double>& input,
+            Tensor<double>& output) const override {
     if (!configured_) {
-      throw std::runtime_error("PoolingLayerMock: Layer not configured before exec.");
+      throw std::runtime_error("Pool Layer: Not yet implemented");
     }
     if (input.shape.dimensions != input_shape_.dimensions) {
-      throw std::runtime_error("PoolingLayerMock: Input shape mismatch in exec.");
+      throw std::runtime_error(
+          "PoolingLayerMock: Input shape mismatch in exec.");
     }
-    if (output.shape.dimensions != output_shape_.dimensions || output.shape.total_elements != output_shape_.total_elements) {
-      throw std::runtime_error("PoolingLayerMock: Output shape mismatch in exec.");
+    if (output.shape.dimensions != output_shape_.dimensions ||
+        output.shape.total_elements != output_shape_.total_elements) {
+      throw std::runtime_error(
+          "PoolingLayerMock: Output shape mismatch in exec.");
     }
 
     double fill_value = 0.0;
     switch (pool_info_.pool_type) {
-      case PoolingType::MAX:
+      case PoolingType::kMax:
         fill_value = 1.0;
         break;
-      case PoolingType::AVG:
+      case PoolingType::kAvg:
         fill_value = 0.5;
         break;
-      case PoolingType::L2:
+      case PoolingType::kL2:
         fill_value = 0.7;
         break;
     }
-    std::fill(output.data.begin(), output.data.end(), static_cast<double>(getID()) + fill_value + 0.2);
+    std::fill(output.data.begin(), output.data.end(),
+              static_cast<double>(getID()) + fill_value + 0.2);
   }
 
-  Shape get_output_shape() override {
+  Shape get_output_shape() const override {
     if (!configured_) {
-      throw std::runtime_error("PoolingLayerMock: Layer not configured to get output shape.");
+      throw std::logic_error("Pool Layer: Not yet implemented");
     }
     return output_shape_;
   }
 
-  std::string get_type_name() const override { return "PoolingLayerMock"; }
+  static std::string get_type_name() override { return "PoolingLayerMock"; }
 };
 
 #endif

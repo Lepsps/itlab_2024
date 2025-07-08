@@ -1,9 +1,8 @@
 #include "./graph/graph.h"
-#include "gtest/gtest.h"
-#include "./tensor/tensor.h"
-
 #include "./layer/ConvLayer.cpp"
 #include "./layer/PoolingLayer.cpp"
+#include "./tensor/tensor.h"
+#include "gtest/gtest.h"
 
 TEST(NetworkTest, IsEmpty_InitiallyTrue) {
   Network network;
@@ -141,7 +140,8 @@ TEST(NetworkTest, Run_SimpleLinearNet_Success) {
   Tensor<double> net_input(input_s1);
   Tensor<double> net_output(output_s2_ref);
 
-  conv1.configure(input_s1, weights_s1, nullptr, output_s1_ref, conv_info_default);
+  conv1.configure(input_s1, weights_s1, nullptr, output_s1_ref,
+                  conv_info_default);
   pool2.configure(output_s1_ref, output_s2_ref);
   network.addLayer(conv1);
   network.addLayer(pool2);
@@ -211,5 +211,7 @@ TEST(NetworkTest, GetLayersTypeVector_NoStartSet_ReturnsError) {
   std::vector<std::string> types = network.getLayersTypeVector();
 
   ASSERT_EQ(types.size(), 1);
-  EXPECT_TRUE(types[0].find("Error: Input layer (start_ ID) has not been set") != std::string::npos);
+  EXPECT_TRUE(
+      types[0].find("Error: Input layer (start_ ID) has not been set") !=
+      std::string::npos);
 }

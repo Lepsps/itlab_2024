@@ -1,10 +1,9 @@
 #ifndef ACL_MATMUL_LAYER_MOCK_H
 #define ACL_MATMUL_LAYER_MOCK_H
 
-#include <numeric>
+#include <cstddef>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 #include "./layer/layer.h"
 #include "./tensor/tensor.h"
@@ -27,21 +26,32 @@ class MatMulLayerMock : public Layer {
     setID(id);
   }
 
-  void configure(const Shape& input_x_shape, const Shape& input_y_shape, Shape& output_shape_ref) {
-    size_t m, k_x, k_y, n;
+  void configure(const Shape& input_x_shape, const Shape& input_y_shape,
+                 Shape& output_shape_ref) {
+    size_t m;
+    size_t k_x;
+    size_t k_y;
+    size_t n;
 
     if (input_x_shape.get_rank() != 2 || input_y_shape.get_rank() != 2) {
-      throw std::runtime_error("MatMulMock: Inputs must be 2D tensors for this mock.");
+      throw std::runtime_error(
+          "MatMulMock: Inputs must be 2D tensors for this mock.");
     }
 
-    m = matmul_info_.transpose_x ? input_x_shape.dimensions[1] : input_x_shape.dimensions[0];
-    k_x = matmul_info_.transpose_x ? input_x_shape.dimensions[0] : input_x_shape.dimensions[1];
+    m = matmul_info_.transpose_x ? input_x_shape.dimensions[1]
+                                 : input_x_shape.dimensions[0];
+    k_x = matmul_info_.transpose_x ? input_x_shape.dimensions[0]
+                                   : input_x_shape.dimensions[1];
 
-    k_y = matmul_info_.transpose_y ? input_y_shape.dimensions[1] : input_y_shape.dimensions[0];
-    n = matmul_info_.transpose_y ? input_y_shape.dimensions[0] : input_y_shape.dimensions[1];
+    k_y = matmul_info_.transpose_y ? input_y_shape.dimensions[1]
+                                   : input_y_shape.dimensions[0];
+    n = matmul_info_.transpose_y ? input_y_shape.dimensions[0]
+                                 : input_y_shape.dimensions[1];
 
     if (k_x != k_y) {
-      throw std::runtime_error("MatMulMock: Inner dimensions do not match for matrix multiplication ");
+      throw std::runtime_error(
+          "MatMulMock: Inner dimensions do not match for matrix "
+          "multiplication ");
     }
 
     input_x_shape_ = input_x_shape;
@@ -52,28 +62,32 @@ class MatMulLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input_x, Tensor<double>& output) override {
+  void exec(const Tensor<double>& input_x,
+            Tensor<double>& output) const override {
     if (!configured_) {
-      throw std::runtime_error("MatMulLayerMock: Layer not configured before exec.");
+      throw std::runtime_error("MatMulLayerMock: Not yet implemented");
     }
     if (input_x.shape.dimensions != input_x_shape_.dimensions) {
-      throw std::runtime_error("MatMulLayerMock: Input X shape mismatch in exec.");
+      throw std::runtime_error(
+          "MatMulLayerMock: Input X shape mismatch in exec.");
     }
-    if (output.shape.dimensions != output_shape_.dimensions || output.shape.total_elements != output_shape_.total_elements) {
+    if (output.shape.dimensions != output_shape_.dimensions ||
+        output.shape.total_elements != output_shape_.total_elements) {
       throw std::runtime_error(
           "MatMulLayerMock: Output shape mismatch in exec.");
     }
-    std::fill(output.data.begin(), output.data.end(), static_cast<double>(getID()) + 0.1);
+    std::fill(output.data.begin(), output.data.end(),
+              static_cast<double>(getID()) + 0.1);
   }
 
-  Shape get_output_shape() override {
+  Shape get_output_shape() const override {
     if (!configured_) {
-      throw std::runtime_error("MatMulLayerMock: Layer not configured to get output shape.");
+      throw std::logic_error("MatMul: Not yet implemented");
     }
     return output_shape_;
   }
 
-  std::string get_type_name() const override { return "MatMulLayerMock"; }
+  static std::string get_type_name() override { return "MatMulLayerMock"; }
 };
 
 #endif

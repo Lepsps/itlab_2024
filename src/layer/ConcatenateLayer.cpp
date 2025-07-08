@@ -1,10 +1,9 @@
 #ifndef ACL_CONCATENATE_LAYER_MOCK_H
 #define ACL_CONCATENATE_LAYER_MOCK_H
 
-#include <numeric>
+#include <cstddef>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 #include "./layer/layer.h"
 #include "./tensor/tensor.h"
@@ -19,14 +18,17 @@ class ConcatenateLayerMock : public Layer {
  public:
   ConcatenateLayerMock(int id) { setID(id); }
 
-  void configure(const std::vector<Shape>& inputs_shapes, unsigned int axis, Shape& output_shape_ref) {
+  void configure(const std::vector<Shape>& inputs_shapes, unsigned int axis,
+                 Shape& output_shape_ref) {
     if (inputs_shapes.empty()) {
-      throw std::runtime_error("ConcatMock: Input shapes list cannot be empty.");
+      throw std::runtime_error(
+          "ConcatMock: Input shapes list cannot be empty.");
     }
 
     const Shape& first_shape = inputs_shapes[0];
     if (axis >= first_shape.get_rank()) {
-      throw std::runtime_error("ConcatMock: Concatenation axis is out of bounds.");
+      throw std::runtime_error(
+          "ConcatMock: Concatenation axis is out of bounds.");
     }
 
     size_t rank = first_shape.get_rank();
@@ -34,14 +36,17 @@ class ConcatenateLayerMock : public Layer {
 
     for (const auto& shape : inputs_shapes) {
       if (shape.get_rank() != rank) {
-        throw std::runtime_error("ConcatMock: All input tensors must have the same rank.");
+        throw std::runtime_error(
+            "ConcatMock: All input tensors must have the same rank.");
       }
       for (unsigned int i = 0; i < rank; ++i) {
         if (i == axis) {
           concatenated_dim_size += shape.dimensions[i];
         } else {
           if (shape.dimensions[i] != first_shape.dimensions[i]) {
-            throw std::runtime_error("ConcatMock: Input tensor dimensions must match along non-concatenation axes.");
+            throw std::runtime_error(
+                "ConcatMock: Input tensor dimensions must match along "
+                "non-concatenation axes.");
           }
         }
       }
@@ -58,26 +63,28 @@ class ConcatenateLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input, Tensor<double>& output) override {
+  void exec(const Tensor<double>& input,
+            Tensor<double>& output) const override {
     if (!configured_) {
-      throw std::runtime_error("ConcatenateLayerMock: Layer not configured.");
+      throw std::logic_error("Concatenate: Not yet implemented");
     }
     if (output.shape.dimensions != output_shape_computed_.dimensions) {
-      throw std::runtime_error("ACLConcatenateLayerMock: Output shape mismatch with computed shape.");
+      throw std::runtime_error(
+          "ACLConcatenateLayerMock: Output shape mismatch with computed "
+          "shape.");
     }
-    std::fill(output.data.begin(), output.data.end(), static_cast<double>(getID()) + 0.6);
+    std::fill(output.data.begin(), output.data.end(),
+              static_cast<double>(getID()) + 0.6);
   }
 
-  Shape get_output_shape() override {
+  Shape get_output_shape() const override {
     if (!configured_) {
-      throw std::runtime_error("ConcatenateLayerMock: Not configured.");
+      throw std::logic_error("Concatenate: Not yet implemented");
     }
     return output_shape_computed_;
   }
 
-  std::string get_type_name() const override {
-    return "ConcatenateLayerMock";
-  }
+  static std::string get_type_name() override { return "ConcatenateLayerMock"; }
 };
 
 #endif

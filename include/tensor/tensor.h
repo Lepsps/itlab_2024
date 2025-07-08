@@ -13,7 +13,7 @@ struct Shape {
   std::vector<size_t> dimensions;
   size_t total_elements;
 
-  Shape() : dimensions(), total_elements(0) {} 
+  Shape() : dimensions(), total_elements(0) {}
   Shape(std::vector<size_t> dims);
   size_t get_rank() const;
 };
@@ -36,10 +36,12 @@ class Tensor {
 };
 
 template <typename T>
-Tensor<T>::Tensor(const Shape &sh, Layout l) : shape(sh), layout(l), data(sh.total_elements) {}
+Tensor<T>::Tensor(const Shape &sh, Layout l)
+    : shape(sh), layout(l), data(sh.total_elements) {}
 
 template <typename T>
-Tensor<T>::Tensor(std::vector<size_t> dims, Layout l) : Tensor(Shape(std::move(dims)), l) {}
+Tensor<T>::Tensor(std::vector<size_t> dims, Layout l)
+    : Tensor(Shape(std::move(dims)), l) {}
 
 template <typename T>
 size_t Tensor<T>::get_linear_index(const std::vector<size_t> &indices) const {
@@ -48,7 +50,7 @@ size_t Tensor<T>::get_linear_index(const std::vector<size_t> &indices) const {
   }
   for (size_t i = 0; i < indices.size(); ++i) {
     if (indices[i] >= shape.dimensions[i]) {
-      std::string error_msg = "Index out of range for dimension ");
+      std::string error_msg = "Index out of range for dimension ";
       throw std::out_of_range(error_msg);
     }
   }
@@ -57,10 +59,8 @@ size_t Tensor<T>::get_linear_index(const std::vector<size_t> &indices) const {
   size_t N = shape.get_rank();
 
   if (N == 0) {
-    if (shape.total_elements == 1 && indices.empty())
-      return 0;
-    if (shape.total_elements == 0 && indices.empty())
-      return 0; 
+    if (shape.total_elements == 1 && indices.empty()) return 0;
+    if (shape.total_elements == 0 && indices.empty()) return 0;
     throw std::logic_error("Invalid access to rank-0 tensor or empty tensor.");
   }
 
@@ -77,9 +77,7 @@ size_t Tensor<T>::get_linear_index(const std::vector<size_t> &indices) const {
     linear_index = indices[0] * (H_dim * W_dim * C_dim) +
                    indices[2] * (W_dim * C_dim) + indices[3] * (C_dim) +
                    indices[1];
-  }
-  else
-  {
+  } else {
     for (size_t i = 0; i < N; ++i) {
       size_t term_stride = 1;
       for (size_t j = i + 1; j < N; ++j) {

@@ -1,10 +1,9 @@
 #ifndef ACL_SPLIT_LAYER_MOCK_H
 #define ACL_SPLIT_LAYER_MOCK_H
 
-#include <numeric>
+#include <cstddef>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 #include "./layer/layer.h"
 #include "./tensor/tensor.h"
@@ -21,7 +20,8 @@ class SplitLayerMock : public Layer {
  public:
   SplitLayerMock(int id) { setID(id); }
 
-  void configure(const Shape& input_shape, unsigned int axis, unsigned int num_splits, Shape& first_output_shape_ref) {
+  void configure(const Shape& input_shape, unsigned int axis,
+                 unsigned int num_splits, Shape& first_output_shape_ref) {
     if (num_splits == 0) {
       throw std::runtime_error("SplitMock: Number of splits cannot be zero.");
     }
@@ -29,7 +29,9 @@ class SplitLayerMock : public Layer {
       throw std::runtime_error("SplitMock: Split axis is out of bounds.");
     }
     if (input_shape.dimensions[axis] % num_splits != 0) {
-      throw std::runtime_error("SplitMock: Dimension size along split axis must be divisible by num_splits.");
+      throw std::runtime_error(
+          "SplitMock: Dimension size along split axis must be divisible by "
+          "num_splits.");
     }
 
     input_shape_config_ = input_shape;
@@ -51,35 +53,41 @@ class SplitLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input, Tensor<double>& output) override {
+  void exec(const Tensor<double>& input,
+            Tensor<double>& output) const override {
     if (!configured_) {
-      throw std::runtime_error("SplitLayerMock: Layer not configured.");
+      throw std::logic_error("Split Layer: Not yet implemented");
     }
     if (input.shape.dimensions != input_shape_config_.dimensions) {
-      throw std::runtime_error("SplitLayerMock: Input shape mismatch with configured shape.");
+      throw std::runtime_error(
+          "SplitLayerMock: Input shape mismatch with configured shape.");
     }
     if (output_shapes_computed_.empty() ||
         output.shape.dimensions != output_shapes_computed_[0].dimensions) {
-      throw std::runtime_error("SplitLayerMock: Output shape must match the shape of the first split part.");
+      throw std::runtime_error(
+          "SplitLayerMock: Output shape must match the shape of the first "
+          "split part.");
     }
 
-    std::fill(output.data.begin(), output.data.end(), static_cast<double>(getID()) + 0.7);
+    std::fill(output.data.begin(), output.data.end(),
+              static_cast<double>(getID()) + 0.7);
   }
 
-  Shape get_output_shape() override {
+  static Shape get_output_shape() override {
     if (!configured_ || output_shapes_computed_.empty()) {
-      throw std::runtime_error("SplitLayerMock: Not configured or no splits defined.");
+      throw std::logic_error("SplitLayerMock:  Not yet implemented.");
     }
     return output_shapes_computed_[0];
   }
 
   const std::vector<Shape>& get_all_split_output_shapes() const {
-    if (!configured_)
-      throw std::runtime_error("SplitLayerMock: Not configured.");
+    if (!configured_) {
+      throw std::logic_error("Split Layer: Not yet implemented");
+    }
     return output_shapes_computed_;
   }
 
-  std::string get_type_name() const override { return "SplitLayerMock"; }
+  static std::string get_type_name() override { return "SplitLayerMock"; }
 };
 
 #endif

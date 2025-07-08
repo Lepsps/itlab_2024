@@ -1,4 +1,4 @@
-#include "./layer/PoolingLayer.cpp" 
+#include "./layer/PoolingLayer.cpp"
 #include "./tensor/tensor.h"
 #include "gtest/gtest.h"
 
@@ -11,8 +11,9 @@ TEST(PoolingLayerMockTest, configure_success_simple_pooling) {
 
   ASSERT_NO_THROW(layer.configure(input_shape, output_shape_ref));
   EXPECT_EQ(output_shape_ref.dimensions, expected_output_shape.dimensions);
-  EXPECT_EQ(layer.get_output_shape().dimensions,expected_output_shape.dimensions);
-}   
+  EXPECT_EQ(layer.get_output_shape().dimensions,
+            expected_output_shape.dimensions);
+}
 
 TEST(PoolingLayerMockTest, configure_success_pooling_with_stride_and_pad) {
   PoolingLayerInfo pool_info;
@@ -37,7 +38,8 @@ TEST(PoolingLayerMockTest, configure_fail_input_rank_not_4) {
   Shape input_shape({1, 32, 32});
   Shape output_shape_ref;
 
-  EXPECT_THROW(layer.configure(input_shape, output_shape_ref),std::runtime_error);
+  EXPECT_THROW(layer.configure(input_shape, output_shape_ref),
+               std::runtime_error);
 }
 
 TEST(PoolingLayerMockTest, exec_before_configure_fail) {
@@ -53,7 +55,7 @@ TEST(PoolingLayerMockTest, get_output_shape_before_configure_fail) {
   PoolingLayerInfo pool_info;
   PoolingLayerMock layer(94, pool_info);
 
-  EXPECT_THROW(layer.get_output_shape(), std::runtime_error);
+  EXPECT_THROW(layer.get_output_shape(), std::logic_error);
 }
 
 TEST(PoolingLayerMockTest, exec_success_after_configure) {
