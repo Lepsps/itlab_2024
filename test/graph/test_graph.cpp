@@ -1,8 +1,8 @@
 #include <unordered_set>
 
 #include "./graph/graph.h"
-#include "./layer/ConvLayer.cpp"
-#include "./layer/PoolingLayer.cpp"
+#include "./layer/ConvLayer.h"
+#include "./layer/PoolingLayer.h"
 #include "./tensor/tensor.h"
 #include "gtest/gtest.h"
 
@@ -106,7 +106,10 @@ TEST(NetworkTest, HasPath_LayerNotInGraph_ReturnsFalse) {
 
 TEST(NetworkTest, Inference_ReturnsCorrectOrder) {
   Network network;
-  ConvolutionLayerMock l1(1), l2(2), l3(3), l4(4);
+  ConvolutionLayerMock l1(1);
+  ConvolutionLayerMock l2(2);
+  ConvolutionLayerMock l3(3);
+  ConvolutionLayerMock l4(4);
 
   network.addEdge(l1, l2);
   network.addEdge(l1, l3);
@@ -179,7 +182,9 @@ TEST(NetworkTest, Run_Fail_NoOutputSet) {
 
 TEST(NetworkTest, Run_Fail_NoPathFromStartToEnd) {
   Network network;
-  ConvolutionLayerMock conv1(1), conv2(2), conv3(3);
+  ConvolutionLayerMock conv1(1);
+  ConvolutionLayerMock conv2(2);
+  ConvolutionLayerMock conv3(3);
   Tensor<double> dummy_in(Shape({1})), dummy_out(Shape({1}));
 
   network.addEdge(conv1, conv2);
@@ -220,8 +225,11 @@ TEST(NetworkTest, GetLayersTypeVector_NoStartSet_ReturnsError) {
 
 TEST(NetworkTest, Build_DiamondShapeGraph_StructureIsCorrect) {
   Network network;
-  ConvolutionLayerMock start_node(1), left_node(2), right_node(3),
-      merge_node(4);
+  ConvolutionLayerMock start_node(1);
+  ConvolutionLayerMock left_node(2);
+  ConvolutionLayerMock right_node(3);
+  ConvolutionLayerMock merge_node(4);
+
   network.addEdge(start_node, left_node);
   network.addEdge(start_node, right_node);
   network.addEdge(left_node, merge_node);

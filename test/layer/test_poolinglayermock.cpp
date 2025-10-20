@@ -1,4 +1,4 @@
-#include "./layer/PoolingLayer.cpp"
+#include "./layer/PoolingLayer.h"
 #include "./tensor/tensor.h"
 #include "gtest/gtest.h"
 

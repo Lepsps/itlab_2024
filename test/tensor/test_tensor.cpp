@@ -1,5 +1,4 @@
 #include <stdexcept>
-#include <string>
 
 #include "./tensor/tensor.h"
 #include "gtest/gtest.h"

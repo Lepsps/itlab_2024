@@ -229,13 +229,13 @@ std::vector<std::string> Network::getLayersTypeVector() const {
   std::vector<std::string> layer_types_vector;
 
   if (start_ == -1) {
-    layer_types_vector.push_back(
+    layer_types_vector.emplace_back(
         "Error: Input layer (start_ ID) has not been set via setInput().");
     return layer_types_vector;
   }
 
   if (layers_.find(start_) == layers_.end()) {
-    layer_types_vector.push_back(
+    layer_types_vector.emplace_back(
         "Error: Start layer with ID not found in the graph's layers map.");
     return layer_types_vector;
   }
@@ -244,13 +244,13 @@ std::vector<std::string> Network::getLayersTypeVector() const {
 
   if (traversal_order.empty()) {
     if (layers_.count(start_)) {
-      layer_types_vector.push_back(
+      layer_types_vector.emplace_back(
           "Warning: BFS traversal from start layer ID yielded no layers (or "
           "only the start layer was expected).");
-      layer_types_vector.push_back("Start layer type: " +
-                                   layers_.at(start_)->get_type_name());
+      layer_types_vector.emplace_back("Start layer type: " +
+                                      layers_.at(start_)->get_type_name());
     } else {
-      layer_types_vector.push_back(
+      layer_types_vector.emplace_back(
           "Error: BFS traversal from start layer ID failed, and start layer "
           "itself is not in graph.");
     }
@@ -260,7 +260,7 @@ std::vector<std::string> Network::getLayersTypeVector() const {
   for (int layer_id : traversal_order) {
     auto it = layers_.find(layer_id);
     if (it == layers_.end()) {
-      layer_types_vector.push_back(
+      layer_types_vector.emplace_back(
           "Error: Layer ID from BFS traversal not found in graph's layers map");
       continue;
     }

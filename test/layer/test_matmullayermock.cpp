@@ -1,4 +1,4 @@
-#include "./layer/MatMulLayer.cpp"
+#include "./layer/MatMulLayer.h"
 #include "./tensor/tensor.h"
 #include "gtest/gtest.h"
 

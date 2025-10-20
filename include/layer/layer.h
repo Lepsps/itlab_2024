@@ -2,6 +2,7 @@
 #define LAYER_H
 
 #include <list>
+#include <string>
 
 #include "./tensor/tensor.h"
 
