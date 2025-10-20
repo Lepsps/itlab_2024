@@ -51,9 +51,18 @@ class ConvolutionLayerMock : public Layer {
       throw std::runtime_error(
           "ConvMockSimp: Weights rank must be 4 (KW, KH, IC, OC).");
     }
-    size_t w_in = input_s.dimensions[0];
-    size_t h_in = input_s.dimensions[1];
-    size_t c_in = input_s.dimensions[2];
+    size_t c_in, h_in, w_in;
+
+    if (input_s.get_rank() == 4) {
+      c_in = input_s.dimensions[1];
+      h_in = input_s.dimensions[2];
+      w_in = input_s.dimensions[3];
+    } else {
+      w_in = input_s.dimensions[0];
+      h_in = input_s.dimensions[1];
+      c_in = input_s.dimensions[2];
+    }
+
     size_t kw = weights_s.dimensions[0];
     size_t kh = weights_s.dimensions[1];
     size_t ic_w = weights_s.dimensions[2];
@@ -66,8 +75,9 @@ class ConvolutionLayerMock : public Layer {
     }
 
     if (has_biases_) {
+      biases_shape_config_ = *biases_s;
       if (biases_shape_config_.get_rank() != 1 ||
-          biases_shape_config_.dimensions[0] != OC_w) {
+          biases_shape_config_.dimensions[0] != oc_w) {
         throw std::runtime_error(
             "ConvMockSimp: Biases must be 1D and size must match output "
             "channels");
@@ -100,8 +110,7 @@ class ConvolutionLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input,
-            Tensor<double>& output) const override {
+  void exec(const Tensor<double>& input, Tensor<double>& output) override {
     if (!configured_) {
       throw std::runtime_error("ConvolutionLayerMock: Not yet implemented.");
     }
@@ -121,14 +130,14 @@ class ConvolutionLayerMock : public Layer {
     std::fill(output.data.begin(), output.data.end(), fill_value);
   }
 
-  Shape get_output_shape() const override {
+  Shape get_output_shape() override {
     if (!configured_) {
       throw std::logic_error("ConvLayer: Not yet implemented");
     }
     return output_shape_computed_;
   }
 
-  static std::string get_type_name() override { return "ConvolutionLayerMock"; }
+  std::string get_type_name() const override { return "ConvolutionLayerMock"; }
 };
 
 #endif

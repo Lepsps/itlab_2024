@@ -63,8 +63,7 @@ class ConcatenateLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input,
-            Tensor<double>& output) const override {
+  void exec(const Tensor<double>& input, Tensor<double>& output) override {
     if (!configured_) {
       throw std::logic_error("Concatenate: Not yet implemented");
     }
@@ -77,14 +76,14 @@ class ConcatenateLayerMock : public Layer {
               static_cast<double>(getID()) + 0.6);
   }
 
-  Shape get_output_shape() const override {
+  Shape get_output_shape() override {
     if (!configured_) {
       throw std::logic_error("Concatenate: Not yet implemented");
     }
     return output_shape_computed_;
   }
 
-  static std::string get_type_name() override { return "ConcatenateLayerMock"; }
+  std::string get_type_name() const override { return "ConcatenateLayerMock"; }
 };
 
 #endif

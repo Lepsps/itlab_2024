@@ -38,8 +38,7 @@ class ReshapeLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input,
-            Tensor<double>& output) const override {
+  void exec(const Tensor<double>& input, Tensor<double>& output) override {
     if (!configured_) {
       throw std::runtime_error("Reshape Layer: Not yet implemented.");
     }
@@ -59,14 +58,14 @@ class ReshapeLayerMock : public Layer {
               static_cast<double>(getID()) + 0.9);
   }
 
-  Shape get_output_shape() const override {
+  Shape get_output_shape() override {
     if (!configured_) {
       throw std::logic_error("Reshape Layer: Not yet implemented");
     }
     return target_output_shape_config_;
   }
 
-  static std::string get_type_name() override { return "ReshapeLayerMock"; }
+  std::string get_type_name() const override { return "ReshapeLayerMock"; }
 };
 
 #endif

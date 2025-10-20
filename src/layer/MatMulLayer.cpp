@@ -62,8 +62,7 @@ class MatMulLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input_x,
-            Tensor<double>& output) const override {
+  void exec(const Tensor<double>& input_x, Tensor<double>& output) override {
     if (!configured_) {
       throw std::runtime_error("MatMulLayerMock: Not yet implemented");
     }
@@ -80,14 +79,14 @@ class MatMulLayerMock : public Layer {
               static_cast<double>(getID()) + 0.1);
   }
 
-  Shape get_output_shape() const override {
+  Shape get_output_shape() override {
     if (!configured_) {
       throw std::logic_error("MatMul: Not yet implemented");
     }
     return output_shape_;
   }
 
-  static std::string get_type_name() override { return "MatMulLayerMock"; }
+  std::string get_type_name() const override { return "MatMulLayerMock"; }
 };
 
 #endif

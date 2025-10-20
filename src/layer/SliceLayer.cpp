@@ -67,8 +67,7 @@ class SliceLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input,
-            Tensor<double>& output) const override {
+  void exec(const Tensor<double>& input, Tensor<double>& output) override {
     if (!configured_) {
       throw std::logic_error("Slice Layer: Not yet implemented");
     }
@@ -85,14 +84,14 @@ class SliceLayerMock : public Layer {
               static_cast<double>(getID()) + 0.8);
   }
 
-  Shape get_output_shape() const override {
+  Shape get_output_shape() override {
     if (!configured_) {
       throw std::logic_error("Slice Layer: Not yet implemented");
     }
     return output_shape_computed_;
   }
 
-  static std::string get_type_name() override { return "SliceLayerMock"; }
+  std::string get_type_name() const override { return "SliceLayerMock"; }
 };
 
 #endif

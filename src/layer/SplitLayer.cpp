@@ -53,8 +53,7 @@ class SplitLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input,
-            Tensor<double>& output) const override {
+  void exec(const Tensor<double>& input, Tensor<double>& output) override {
     if (!configured_) {
       throw std::logic_error("Split Layer: Not yet implemented");
     }
@@ -73,7 +72,7 @@ class SplitLayerMock : public Layer {
               static_cast<double>(getID()) + 0.7);
   }
 
-  static Shape get_output_shape() override {
+  Shape get_output_shape() override {
     if (!configured_ || output_shapes_computed_.empty()) {
       throw std::logic_error("SplitLayerMock:  Not yet implemented.");
     }
@@ -87,7 +86,7 @@ class SplitLayerMock : public Layer {
     return output_shapes_computed_;
   }
 
-  static std::string get_type_name() override { return "SplitLayerMock"; }
+  std::string get_type_name() const override { return "SplitLayerMock"; }
 };
 
 #endif

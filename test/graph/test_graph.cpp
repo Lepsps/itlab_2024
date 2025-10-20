@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include "./graph/graph.h"
 #include "./layer/ConvLayer.cpp"
 #include "./layer/PoolingLayer.cpp"
@@ -132,7 +134,7 @@ TEST(NetworkTest, Run_SimpleLinearNet_Success) {
   pool_info_default.stride_y = 1;
 
   ConvolutionLayerMock conv1(10);
-  Shape input_s1({3, 3, 1});
+  Shape input_s1({1, 1, 3, 3});
   Shape weights_s1({3, 3, 1, 1});
   Shape output_s1_ref;
   PoolingLayerMock pool2(20, pool_info_default);
@@ -214,4 +216,57 @@ TEST(NetworkTest, GetLayersTypeVector_NoStartSet_ReturnsError) {
   EXPECT_TRUE(
       types[0].find("Error: Input layer (start_ ID) has not been set") !=
       std::string::npos);
+}
+
+TEST(NetworkTest, Build_DiamondShapeGraph_StructureIsCorrect) {
+  Network network;
+  ConvolutionLayerMock start_node(1), left_node(2), right_node(3),
+      merge_node(4);
+  network.addEdge(start_node, left_node);
+  network.addEdge(start_node, right_node);
+  network.addEdge(left_node, merge_node);
+  network.addEdge(right_node, merge_node);
+
+  EXPECT_EQ(network.getLayers(), 4);
+  EXPECT_EQ(network.getEdges(), 4);
+
+  EXPECT_TRUE(network.hasPath(start_node, merge_node));
+  EXPECT_TRUE(network.hasPath(start_node, left_node));
+  EXPECT_TRUE(network.hasPath(start_node, right_node));
+
+  EXPECT_FALSE(network.hasPath(left_node, right_node));
+  EXPECT_FALSE(network.hasPath(right_node, left_node));
+}
+
+TEST(NetworkTest, Build_GraphWithSideInput_InferenceFindsAllNodes) {
+  Network network;
+
+  ConvolutionLayerMock input_node(1);
+  ConvolutionLayerMock split_node(2);
+  ConvolutionLayerMock left_branch(3);
+  ConvolutionLayerMock right_branch(4);
+  ConvolutionLayerMock merge_node(5);
+  ConvolutionLayerMock side_input(6);
+
+  network.addEdge(input_node, split_node);
+  network.addEdge(split_node, left_branch);
+  network.addEdge(split_node, right_branch);
+  network.addEdge(left_branch, merge_node);
+  network.addEdge(right_branch, merge_node);
+  network.addEdge(side_input, merge_node);
+
+  std::vector<int> order = network.inference(input_node.getID());
+
+  EXPECT_EQ(order.size(), 5);
+
+  std::unordered_set<int> visited_nodes(order.begin(), order.end());
+
+  EXPECT_EQ(visited_nodes.count(1), 1);
+  EXPECT_EQ(visited_nodes.count(2), 1);
+  EXPECT_EQ(visited_nodes.count(3), 1);
+  EXPECT_EQ(visited_nodes.count(4), 1);
+  EXPECT_EQ(visited_nodes.count(5), 1);
+  EXPECT_EQ(visited_nodes.count(6), 0);
+
+  EXPECT_TRUE(network.hasPath(side_input, merge_node));
 }

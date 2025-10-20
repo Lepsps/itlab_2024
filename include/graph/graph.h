@@ -20,7 +20,8 @@ class Network {
  public:
   Network();
 
-  bool addLayer(Layer& lay, const std::vector<int>& inputs ={}, const std::vector<int>& outputs = {});
+  bool addLayer(Layer& lay, const std::vector<int>& inputs = {},
+                const std::vector<int>& outputs = {});
   void addEdge(Layer& layPrev, Layer& layNext);
   void removeEdge(Layer& layPrev, Layer& layNext);
   void removeLayer(Layer& lay);

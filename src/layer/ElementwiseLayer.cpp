@@ -69,7 +69,7 @@ class ElementwiseLayerMock : public Layer {
               static_cast<double>(getID()) + fill_value_offset + 0.3);
   }
 
-  Shape get_output_shape() const override {
+  Shape get_output_shape() override {
     if (!configured_) {
       throw std::logic_error("Elementwise: Not yet implemented");
     }

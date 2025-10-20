@@ -55,8 +55,8 @@ class PoolingLayerMock : public Layer {
     input_shape_ = input_shape;
     output_shape_ = input_shape;
 
-    output_shape_.dimensions[H_in_idx] = H_out;
-    output_shape_.dimensions[W_in_idx] = W_out;
+    output_shape_.dimensions[h_in_idx] = h_out;
+    output_shape_.dimensions[w_in_idx] = w_out;
 
     output_shape_ = Shape(output_shape_.dimensions);
 
@@ -64,8 +64,7 @@ class PoolingLayerMock : public Layer {
     configured_ = true;
   }
 
-  void exec(const Tensor<double>& input,
-            Tensor<double>& output) const override {
+  void exec(const Tensor<double>& input, Tensor<double>& output) override {
     if (!configured_) {
       throw std::runtime_error("Pool Layer: Not yet implemented");
     }
@@ -95,14 +94,14 @@ class PoolingLayerMock : public Layer {
               static_cast<double>(getID()) + fill_value + 0.2);
   }
 
-  Shape get_output_shape() const override {
+  Shape get_output_shape() override {
     if (!configured_) {
       throw std::logic_error("Pool Layer: Not yet implemented");
     }
     return output_shape_;
   }
 
-  static std::string get_type_name() override { return "PoolingLayerMock"; }
+  std::string get_type_name() const override { return "PoolingLayerMock"; }
 };
 
 #endif
