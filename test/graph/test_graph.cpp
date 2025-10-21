@@ -1,4 +1,9 @@
+#include <algorithm>
+#include <cstddef>
+#include <stdexcept>
+#include <string>
 #include <unordered_set>
+#include <vector>
 
 #include "./graph/graph.h"
 #include "./layer/ConvLayer.h"
@@ -118,10 +123,15 @@ TEST(NetworkTest, Inference_ReturnsCorrectOrder) {
 
   ASSERT_EQ(order.size(), 4);
   EXPECT_EQ(order[0], 1);
-  bool found2 = false, found3 = false;
+  bool found2 = false;
+  bool found3 = false;
   for (size_t i = 1; i < 3; ++i) {
-    if (order[i] == 2) found2 = true;
-    if (order[i] == 3) found3 = true;
+    if (order[i] == 2) {
+      found2 = true;
+    }
+    if (order[i] == 3) {
+      found3 = true;
+    }
   }
   EXPECT_TRUE(found2);
   EXPECT_TRUE(found3);
@@ -185,7 +195,8 @@ TEST(NetworkTest, Run_Fail_NoPathFromStartToEnd) {
   ConvolutionLayerMock conv1(1);
   ConvolutionLayerMock conv2(2);
   ConvolutionLayerMock conv3(3);
-  Tensor<double> dummy_in(Shape({1})), dummy_out(Shape({1}));
+  Tensor<double> dummy_in(Shape({1}));
+  Tensor<double> dummy_out(Shape({1}));
 
   network.addEdge(conv1, conv2);
   network.setInput(conv1, dummy_in);

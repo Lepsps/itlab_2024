@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "./layer/PoolingLayer.h"
 #include "./tensor/tensor.h"
 #include "gtest/gtest.h"
@@ -61,7 +63,8 @@ TEST(PoolingLayerMockTest, get_output_shape_before_configure_fail) {
 TEST(PoolingLayerMockTest, exec_success_after_configure) {
   PoolingLayerInfo pool_info;
   PoolingLayerMock layer(95, pool_info);
-  Shape input_s({1, 3, 4, 4}), out_ref;
+  Shape input_s({1, 3, 4, 4});
+  Shape out_ref;
 
   layer.configure(input_s, out_ref);
   Tensor<double> t_in(input_s);

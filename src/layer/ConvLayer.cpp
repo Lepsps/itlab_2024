@@ -1,8 +1,12 @@
 #include "./layer/ConvLayer.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <stdexcept>
+#include <string>
 #include <vector>
+
+#include "tensor/tensor.h"
 
 ConvolutionLayerMock::ConvolutionLayerMock(int id) { setID(id); }
 
@@ -25,7 +29,10 @@ void ConvolutionLayerMock::configure(const Shape& input_s,
         "ConvMockSimp: Weights rank must be 4 (KW, KH, IC, OC).");
   }
 
-  size_t c_in, h_in, w_in;
+  size_t c_in;
+  size_t h_in;
+  size_t w_in;
+
   if (input_s.get_rank() == 4) {
     c_in = input_s.dimensions[1];
     h_in = input_s.dimensions[2];

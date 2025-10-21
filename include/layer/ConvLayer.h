@@ -2,7 +2,6 @@
 #define CONV_LAYER_H
 
 #include <string>
-#include <vector>
 
 #include "layer/layer.h"
 #include "tensor/tensor.h"

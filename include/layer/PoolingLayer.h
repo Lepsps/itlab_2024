@@ -1,6 +1,7 @@
 #ifndef POOLING_LAYER_H
 #define POOLING_LAYER_H
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 

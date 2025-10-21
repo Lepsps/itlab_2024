@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "./layer/ConvLayer.h"
 #include "./tensor/tensor.h"
 #include "gtest/gtest.h"

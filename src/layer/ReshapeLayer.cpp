@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <cstddef>
 #include <stdexcept>
+#include <string>
+
+#include "tensor/tensor.h"
 
 ReshapeLayerMock::ReshapeLayerMock(int id) { setID(id); }
 

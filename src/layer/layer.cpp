@@ -1,5 +1,7 @@
 #include "./layer/layer.h"
 
+#include <string>
+
 void Layer::addNeighbor(Layer* neighbor) {
   if (neighbor != nullptr) {
     neighbors_.push_back(neighbor);

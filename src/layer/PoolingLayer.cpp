@@ -1,8 +1,12 @@
 #include "./layer/PoolingLayer.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <stdexcept>
+#include <string>
 #include <vector>
+
+#include "tensor/tensor.h"
 
 PoolingLayerMock::PoolingLayerMock(int id, const PoolingLayerInfo& info)
     : pool_info_(info) {

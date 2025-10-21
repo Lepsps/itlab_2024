@@ -1,16 +1,16 @@
 #include "./graph/graph.h"
 
-#include <iostream>
 #include <list>
 #include <queue>
 #include <stdexcept>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
 #include "./layer/layer.h"
 #include "./tensor/tensor.h"
 
-Network::Network() : inputTensor_(), outputTensor_(nullptr) {}
+Network::Network() : outputTensor_(nullptr) {}
 
 bool Network::addLayer(Layer& lay, const std::vector<int>& inputs,
                        const std::vector<int>& outputs) {

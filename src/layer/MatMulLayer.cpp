@@ -1,7 +1,11 @@
 #include "./layer/MatMulLayer.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <stdexcept>
+#include <string>
+
+#include "tensor/tensor.h"
 
 MatMulLayerMock::MatMulLayerMock(int id, const MatMulInfo& info)
     : matmul_info_(info) {
@@ -11,7 +15,10 @@ MatMulLayerMock::MatMulLayerMock(int id, const MatMulInfo& info)
 void MatMulLayerMock::configure(const Shape& input_x_shape,
                                 const Shape& input_y_shape,
                                 Shape& output_shape_ref) {
-  size_t m, k_x, k_y, n;
+  size_t m;
+  size_t k_x;
+  size_t k_y;
+  size_t n;
 
   if (input_x_shape.get_rank() != 2 || input_y_shape.get_rank() != 2) {
     throw std::runtime_error(

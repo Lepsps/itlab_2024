@@ -1,8 +1,12 @@
 #include "./layer/ConcatenateLayer.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <stdexcept>
+#include <string>
 #include <vector>
+
+#include "tensor/tensor.h"
 
 ConcatenateLayerMock::ConcatenateLayerMock(int id) { setID(id); }
 

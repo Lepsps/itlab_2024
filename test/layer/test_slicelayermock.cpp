@@ -1,3 +1,6 @@
+#include <stdexcept>
+#include <vector>
+
 #include "./layer/SliceLayer.h"
 #include "./tensor/tensor.h"
 #include "gtest/gtest.h"

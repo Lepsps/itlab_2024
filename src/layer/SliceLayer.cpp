@@ -1,8 +1,12 @@
 #include "layer/SliceLayer.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <stdexcept>
+#include <string>
 #include <vector>
+
+#include "tensor/tensor.h"
 
 SliceLayerMock::SliceLayerMock(int id) { setID(id); }
 

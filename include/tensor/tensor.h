@@ -26,7 +26,7 @@ class Tensor {
   Layout layout;
   std::vector<T> data;
 
-  Tensor() : shape(), layout(Layout::kNd), data() {}
+  Tensor() : layout(Layout::kNd), data() {}
   Tensor(const Shape &sh, Layout l = Layout::kNd);
   Tensor(std::vector<size_t> dims, Layout l = Layout::kNd);
   size_t get_linear_index(const std::vector<size_t> &indices) const;

@@ -2,6 +2,9 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <string>
+
+#include "tensor/tensor.h"
 
 ElementwiseLayerMock::ElementwiseLayerMock(int id, ElementwiseOp op)
     : op_type_(op) {
